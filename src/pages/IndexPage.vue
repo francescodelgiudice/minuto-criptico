@@ -4,6 +4,8 @@
       <div class="column no-wrap q-gutter-y-lg">
         <card-wrapper
           v-for="clue in decoratedClues"
+          bordered
+          shadowed
           :key="clue.index"
           :text="clue.text"
           :title="clue.title"
