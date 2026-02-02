@@ -38,10 +38,10 @@
         </div>
         <span
           v-else
-          class="font-serif text-black text-h5 text-weight-bolder text-italic bg-primary"
+          class="font-serif text-black text-[20px] text-weight-bolder text-italic bg-primary"
           style="line-height: 1"
         >
-          minuto criptico
+          Emminuto criptico
         </span>
         <button
           style="
