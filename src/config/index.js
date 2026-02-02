@@ -94,4 +94,50 @@ export const CLUES = [
     par: 2,
     success: 'Spero ti sia divertita perché non è finita qui! Buona San Valentino pippi, ti amo <3',
   },
+  {
+    title: 'Bonus clue',
+    text: 'On top of the chair, your first royal oval cat!',
+    solution: 'Churro',
+    date: '02 Febbraio, 2026',
+    hints: {
+      fodders: {
+        text: 'Dovrai giocare con le parole "your", "chair", "royal" e "oval". Buona fortuna pippi!',
+        used: false,
+        strings: [
+          {
+            word: 'chair',
+          },
+          {
+            word: 'royal',
+          },
+          {
+            word: 'oval',
+          },
+        ],
+      },
+      definition: {
+        text: 'La definizione è "cat", Non serviva manco chiederlo...',
+        used: false,
+        strings: [
+          {
+            word: 'cat',
+          },
+        ],
+      },
+      indicators: {
+        text: 'Gli indicators sono "On top of the" e "first". Ma non pensare sia finita qui :)',
+        used: false,
+        strings: [
+          {
+            word: 'On top of the',
+          },
+          {
+            word: 'first',
+          },
+        ],
+      },
+    },
+    par: 2,
+    success: 'Vabbé si capiva subito da cat, ma comunque andava fatto <3',
+  },
 ]
