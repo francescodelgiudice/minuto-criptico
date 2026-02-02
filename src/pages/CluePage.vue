@@ -2,7 +2,8 @@
   <q-page class="flex justify-center full-width">
     <div class="container column no-wrap q-gutter-y-xl full-width">
       <card-wrapper class="full-width">
-        <span class="text-[24px]"> {{ decoratedClue.text }} {{ decoratedClue.lengthText }} </span>
+        <span class="text-[24px]" v-html="decoratedClue.text"></span>
+        <span class="text-[24px]"> {{ decoratedClue.lengthText }} </span>
       </card-wrapper>
 
       <div class="hints-wrapper">
@@ -28,11 +29,7 @@
       </div>
 
       <hints-dialog v-model="showHintsDialog" :clue="decoratedClue" @show:hint="onShowHint" />
-      <hint-dialog
-        v-model="showHintDialog"
-        :hint="decoratedClue.hints[hintToShow]"
-        @back="onBack"
-      />
+      <hint-dialog v-model="showHintDialog" :hint="currentHint" @back="onBack" />
       <success-dialog v-model="success" :clue="decoratedClue" />
     </div>
   </q-page>
@@ -64,10 +61,30 @@ const showHintsDialog = ref(false)
 const showHintDialog = ref(false)
 const hintToShow = ref(null)
 
+const currentHint = computed(() => {
+  if (hintToShow.value && hints.value[hintToShow.value]) {
+    return hints.value[hintToShow.value]
+  }
+  return null
+})
+
 const decoratedClue = computed(() => {
   const length = clue.value.solution.split(' ').map((word) => word.length)
+  let text = clue.value.text
+
+  // If a hint is being shown, wrap the hint words in <b> tags
+  if (currentHint.value) {
+    const hint = currentHint.value
+    if (hint.strings) {
+      hint.strings.forEach((item) => {
+        const regex = new RegExp(`(${item.word})`, 'gi')
+        text = text.replace(regex, `<span class="show-hint ${hintToShow.value}">$1</span>`)
+      })
+    }
+  }
   return {
     ...clue.value,
+    text,
     length,
     lengthText: `(${length.join(', ')})`,
   }
@@ -148,6 +165,20 @@ function onBack() {
     min-width: 400px;
   }
 }
+
+.show-hint {
+  position: relative;
+}
+.show-hint.definition {
+  background: #d5e8ff;
+}
+.show-hint.indicators {
+  background: #f5d1fd;
+}
+.show-hint.fodders {
+  background: #fff2b1;
+}
+
 @keyframes shake {
   0% {
     transform: translate(1px, 1px);
