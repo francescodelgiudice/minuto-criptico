@@ -3,7 +3,6 @@
     <div class="container column no-wrap q-gutter-y-xl full-width">
       <card-wrapper class="full-width">
         <span class="text-[24px]" v-html="decoratedClue.text"></span>
-        <span class="text-[24px]"> {{ decoratedClue.lengthText }} </span>
       </card-wrapper>
 
       <div class="hints-wrapper">
@@ -82,11 +81,12 @@ const decoratedClue = computed(() => {
       })
     }
   }
+
+  text = text + ` (${length.join(', ')})`
   return {
     ...clue.value,
     text,
     length,
-    lengthText: `(${length.join(', ')})`,
   }
 })
 
