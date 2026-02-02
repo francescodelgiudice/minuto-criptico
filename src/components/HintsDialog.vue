@@ -112,11 +112,9 @@ function onClose() {
   height: 10px;
   opacity: 1;
   z-index: -1;
-  transition: width 0.3s ease-in-out;
 }
 .clue-hint:hover span::before {
-  width: 120%;
-  left: -10%;
+  transform: scale(1.2);
 }
 .clue-hint.definition span:before {
   background: #d5e8ff;
