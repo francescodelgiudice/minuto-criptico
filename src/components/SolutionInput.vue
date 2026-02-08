@@ -1,5 +1,18 @@
 <template>
   <div class="row justify-center q-gutter-md">
+    <!-- Hidden input for mobile keyboard support -->
+    <input
+      ref="hiddenInput"
+      type="text"
+      inputmode="text"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="characters"
+      spellcheck="false"
+      class="hidden-input"
+      @input="handleMobileInput"
+      @keydown="handleKeyDown"
+    />
     <template v-for="(word, wIndex) in array" :key="wIndex">
       <div class="row no-wrap items-center">
         <button
@@ -42,6 +55,8 @@ const props = defineProps({
 
 const emits = defineEmits(['update:solution'])
 
+const hiddenInput = ref(null)
+
 const active = ref({
   letter: 0,
   word: 0,
@@ -51,6 +66,10 @@ const array = ref(props.instance?.map((word) => new Array(word).map(() => '')) |
 
 function onSelectButton(word, letter) {
   active.value = { word, letter }
+  // Focus the hidden input to trigger keyboard on mobile
+  if (hiddenInput.value) {
+    hiddenInput.value.focus()
+  }
 }
 
 function updateSolution() {
@@ -58,11 +77,12 @@ function updateSolution() {
   emits('update:solution', solution)
 }
 
-function handleKeyPress(event) {
+function handleKeyDown(event) {
   const key = event.key.toUpperCase()
 
   // Check if the pressed key is a letter (A-Z)
   if (/^[A-Z]$/.test(key)) {
+    event.preventDefault()
     const { word, letter } = active.value
     // Update the letter at the active position
     array.value[word][letter] = key
@@ -75,7 +95,12 @@ function handleKeyPress(event) {
       active.value.letter = 0
     }
     updateSolution()
+    // Clear the hidden input
+    if (hiddenInput.value) {
+      hiddenInput.value.value = ''
+    }
   } else if (key === 'BACKSPACE') {
+    event.preventDefault()
     const { word, letter } = active.value
 
     if (array.value[word][letter] === '' || array.value[word][letter] === undefined) {
@@ -94,12 +119,38 @@ function handleKeyPress(event) {
   }
 }
 
+function handleMobileInput(event) {
+  // Handle input event for mobile keyboards
+  const value = event.target.value.toUpperCase()
+  if (value && /^[A-Z]$/.test(value)) {
+    const { word, letter } = active.value
+    // Update the letter at the active position
+    array.value[word][letter] = value
+
+    // Move to the next position
+    if (letter < array.value[word].length - 1) {
+      active.value.letter += 1
+    } else if (word < array.value.length - 1) {
+      active.value.word += 1
+      active.value.letter = 0
+    }
+    updateSolution()
+  }
+  // Clear the input immediately for next character
+  event.target.value = ''
+}
+
 onMounted(() => {
-  window.addEventListener('keyup', handleKeyPress)
+  // Auto-focus the hidden input on mount to trigger keyboard on mobile
+  if (hiddenInput.value) {
+    setTimeout(() => {
+      hiddenInput.value.focus()
+    }, 300)
+  }
 })
 
 onUnmounted(() => {
-  window.removeEventListener('keyup', handleKeyPress)
+  // No cleanup needed for the ref-based approach
 })
 
 watch(
@@ -116,11 +167,24 @@ watch(
       // Skip space
       count++
     }
+    updateSolution()
   },
 )
 </script>
 
 <style>
+.hidden-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  z-index: -1;
+  height: 1px;
+  width: 1px;
+  border: none;
+  outline: none;
+}
+
 .input-button {
   max-width: 46px;
   max-height: 46px;
