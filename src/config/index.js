@@ -92,7 +92,7 @@ export const CLUES = [
       },
     },
     par: 2,
-    success: 'Spero ti sia divertita perché non è finita qui! Buona San Valentino pippi, ti amo <3',
+    success: 'Spero ti sia divertita, ora prendi il regalo! Buona San Valentino pippi, ti amo <3',
   },
   {
     title: 'Bonus clue',
@@ -104,6 +104,9 @@ export const CLUES = [
         text: 'Dovrai giocare con le parole "your", "chair", "royal" e "oval". Buona fortuna pippi!',
         used: false,
         strings: [
+          {
+            word: 'your',
+          },
           {
             word: 'chair',
           },
